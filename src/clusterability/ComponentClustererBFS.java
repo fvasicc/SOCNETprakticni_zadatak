@@ -9,17 +9,23 @@ import java.util.List;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
+import exceptions.GraphIsClusterableException;
 import interfaces.ComponentClustererU;
+import interfaces.MarkedGraphMetricsU;
+import model.EdgeInfo;
 import model.Mark;
 
-public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>{
+public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, MarkedGraphMetricsU<V, E> {
 	
 	private UndirectedSparseGraph<V, E> graph;
 	private Transformer<E, Mark> markTransformer;
 	
-	private List<UndirectedSparseGraph<V, E>> clustersWithNegativeLink = new ArrayList<>();;
-	private List<UndirectedSparseGraph<V, E>> clustersWithoutNegtiveLink = new ArrayList<>();;
+	private List<UndirectedSparseGraph<V, E>> clustersWithNegativeLink = new ArrayList<>();
+	private List<UndirectedSparseGraph<V, E>> clustersWithoutNegtiveLink = new ArrayList<>();
 	private List<UndirectedSparseGraph<V, E>> components;
+	List<EdgeInfo<E, V>> negativeEdges = new ArrayList<>();
+	
+	private UndirectedSparseGraph<UndirectedSparseGraph<V, E>, E> graphComponents = new UndirectedSparseGraph<>();
 	
 	private HashSet<V> visited;
 	
@@ -39,36 +45,11 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>{
 		for (V vertex : this.graph.getVertices()) {
 			if (!this.visited.contains(vertex))
 				identifyComponent(vertex);
-		}	
-		
-		Collections.sort(this.components, (c1, c2) -> c2.getVertexCount() - c1.getVertexCount());		
-	}
-
-	private void identifyNegativeLink(UndirectedSparseGraph<V, E> component) {
-		List<V> nodes = new ArrayList<>(component.getVertices());
-		boolean hasNegativeLink = false;
-		
-		for (int i = 0; i < nodes.size() - 1; i++) {
-			for (int j = 1; j < nodes.size(); j++) {
-				V node1 = nodes.get(i);
-				V node2 = nodes.get(j);
-				
-				E link = this.graph.findEdge(node1, node2);
-				
-				if (link != null) {
-					
-					Mark markedLink = markTransformer.transform(link);
-					
-					if (markedLink == Mark.NEGATIVE) {
-						clustersWithNegativeLink.add(component);
-						hasNegativeLink = true;
-					}
-				}
-			}
 		}
 		
-		if (!hasNegativeLink) 
-			clustersWithoutNegtiveLink.add(component);
+		generateClusterGraph();
+		
+		Collections.sort(this.components, (c1, c2) -> c2.getVertexCount() - c1.getVertexCount());		
 	}
 
 	private void identifyComponent(V startNode) {
@@ -104,6 +85,77 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>{
 		components.add(component);
 	}
 	
+	private void identifyNegativeLink(UndirectedSparseGraph<V, E> component) {
+		List<V> nodes = new ArrayList<>(component.getVertices());
+		boolean hasNegativeLink = false;
+		
+		for (int i = 0; i < nodes.size() - 1; i++) {
+			for (int j = i + 1; j < nodes.size(); j++) {
+				V node1 = nodes.get(i);
+				V node2 = nodes.get(j);
+				
+				E link = this.graph.findEdge(node1, node2);
+				
+				if (link != null) {
+					
+					Mark markedLink = markTransformer.transform(link);
+					
+					if (markedLink == Mark.NEGATIVE) {
+						if (component.findEdge(node1, node2) == null)
+							component.addEdge(link, node1, node2);
+						if (!hasNegativeLink)
+							clustersWithNegativeLink.add(component);
+						this.negativeEdges.add(new EdgeInfo<E,V>(link, node1, node2));
+						hasNegativeLink = true;
+					}
+				}
+			}
+		}
+		
+		if (!hasNegativeLink) 
+			clustersWithoutNegtiveLink.add(component);
+	}
+	
+	private void generateClusterGraph() {
+		for (int i = 0; i < this.components.size() - 1; i++) {
+			UndirectedSparseGraph<V, E> comp1 = this.components.get(i);
+			for (int j = i + 1; j < this.components.size(); j++) {
+				UndirectedSparseGraph<V, E> comp2 = this.components.get(j);
+				E link = conectedComponents(comp1, comp2);
+				if (link != null) {
+					this.graphComponents.addEdge(link, comp1, comp2);
+				}
+			}
+		}
+	}
+	
+	private E conectedComponents(UndirectedSparseGraph<V, E> comp1, UndirectedSparseGraph<V, E> comp2) {
+		for (V vertex1 : comp1.getVertices()) {
+			for (V vertex2 : comp2.getVertices()) {
+				E link = this.graph.findEdge(vertex1, vertex2);
+				if (link != null)
+					return link;
+			}
+		}
+		return null;
+	}
+	
+	private void findNegativeEdges() {		
+		for (UndirectedSparseGraph<V, E> cluster : this.clustersWithNegativeLink) {
+			List<V> nodes = new ArrayList<>(cluster.getVertices());
+			for (int i = 0; i < nodes.size() - 1; i++) {
+				for (int j = i + 1; j < nodes.size(); j++) {
+					V node1 = nodes.get(i);
+					V node2 = nodes.get(j);
+					
+					E link = this.graph.findEdge(node1, node2);
+					if (link != null && markTransformer.transform(link) == Mark.NEGATIVE)
+						this.negativeEdges.add(new EdgeInfo<E, V>(link, node1, node2));
+				}
+			}
+		}
+	}
+
 	@Override
 	public List<UndirectedSparseGraph<V, E>> getAllComponents() {
 		return components;
@@ -114,15 +166,31 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>{
 		return components.get(0);
 	}
 	
+	@Override
+	public UndirectedSparseGraph<UndirectedSparseGraph<V, E>, E> getComponentsGraph() {
+		return this.graphComponents;
+	}
+	
+	@Override
 	public List<UndirectedSparseGraph<V, E>> getCoalitions() {
 		return clustersWithoutNegtiveLink;
 	}
 	
+	@Override
 	public List<UndirectedSparseGraph<V, E>> getNonCoalitions() {
 		return clustersWithNegativeLink;
 	}
 	
+	@Override
 	public boolean isClusterable() {
 		return clustersWithNegativeLink.size() == 0;
+	}
+	
+	@Override
+	public List<EdgeInfo<E, V>> getNegativeLinks() throws GraphIsClusterableException {
+		if (this.isClusterable()) 
+			throw new GraphIsClusterableException("The graph is clustered. Components have only positive links!!!");
+		
+		return this.negativeEdges;
 	}
 }

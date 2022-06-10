@@ -14,13 +14,20 @@ public class MarkedEdge implements Marked<Mark>{
 	public Mark getMark() {
 		return this.mark;
 	}
+	
+	@Override
+	public void setNewMark(Mark newMark) {
+		this.mark = newMark;
+	}
 
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
 		if (mark == Mark.NEGATIVE)
 			return "-";
-		else
+		else if (mark == Mark.POSITIVE)
 			return "+";
+		else 
+			return "";
 	}
 }

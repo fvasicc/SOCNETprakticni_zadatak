@@ -9,4 +9,6 @@ public interface ComponentClustererU<V, E> {
 	UndirectedSparseGraph<V, E> getGiantComponent();
 	
 	List<UndirectedSparseGraph<V, E>> getAllComponents();
+	
+	UndirectedSparseGraph<UndirectedSparseGraph<V, E>, E> getComponentsGraph();
 }
