@@ -119,6 +119,7 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, M
 	private void generateClusterGraph() {
 		for (int i = 0; i < this.components.size() - 1; i++) {
 			UndirectedSparseGraph<V, E> comp1 = this.components.get(i);
+			this.graphComponents.addVertex(comp1);
 			for (int j = i + 1; j < this.components.size(); j++) {
 				UndirectedSparseGraph<V, E> comp2 = this.components.get(j);
 				E link = conectedComponents(comp1, comp2);
@@ -138,22 +139,6 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, M
 			}
 		}
 		return null;
-	}
-	
-	private void findNegativeEdges() {		
-		for (UndirectedSparseGraph<V, E> cluster : this.clustersWithNegativeLink) {
-			List<V> nodes = new ArrayList<>(cluster.getVertices());
-			for (int i = 0; i < nodes.size() - 1; i++) {
-				for (int j = i + 1; j < nodes.size(); j++) {
-					V node1 = nodes.get(i);
-					V node2 = nodes.get(j);
-					
-					E link = this.graph.findEdge(node1, node2);
-					if (link != null && markTransformer.transform(link) == Mark.NEGATIVE)
-						this.negativeEdges.add(new EdgeInfo<E, V>(link, node1, node2));
-				}
-			}
-		}
 	}
 
 	@Override
