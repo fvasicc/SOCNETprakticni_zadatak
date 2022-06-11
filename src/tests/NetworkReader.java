@@ -11,6 +11,13 @@ import model.MarkedEdge;
 
 public class NetworkReader {
 	
+	public static final int DEFAULT_LINES = 30000;
+	
+	public static UndirectedSparseGraph<Integer, MarkedEdge> readEpinionsOrSlashdot(String file) 
+			throws IllegalArgumentException, FileNotFoundException, IOException {
+		return readEpinionsOrSlashdot(file, DEFAULT_LINES);
+	}
+	
 	public static UndirectedSparseGraph<Integer, MarkedEdge> readEpinionsOrSlashdot(String file, int lines)
 			throws IllegalArgumentException, FileNotFoundException, IOException {
 		try (BufferedReader in = new BufferedReader(new FileReader(file))) {
@@ -41,6 +48,13 @@ public class NetworkReader {
 			return graph;
 		}
 	}
+	
+	public static UndirectedSparseGraph<Integer, MarkedEdge> readWiki(String file) {
+		return readWiki(file, DEFAULT_LINES);
+	}
 
+	public static UndirectedSparseGraph<Integer, MarkedEdge> readWiki(String file, int lines) {
+		return null;
+	}
 
 }
