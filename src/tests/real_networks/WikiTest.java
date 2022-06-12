@@ -14,7 +14,7 @@ public class WikiTest {
 	
 	public static String FILE = "res/wiki-RfA.txt";
 	
-	private static int LINES_FOR_READING = 250000;
+	private static int LINES_FOR_READING = 50_000;
 	
 	public static void main(String[] args) {
 		System.out.println(FILE + "\n=================================================");

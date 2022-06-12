@@ -14,7 +14,7 @@ public class EpinionsAndSlashdotTest {
 
 	public static String FILES[] = { "res/soc-sign-Slashdot081106.txt", "res/soc-sign-epinions.txt"};
 	
-	private static int LINES_FOR_READING = 20000;
+	private static int LINES_FOR_READING = 25000;
 
 	public static void main(String[] args) {
 		for (String file : FILES) {

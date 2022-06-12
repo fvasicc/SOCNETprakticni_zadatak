@@ -74,10 +74,12 @@ public class NetworkReader {
 				String node1 = m.group("src").trim();
 				String node2 = m.group("tgt").trim();
 				Integer vot = Integer.parseInt(m.group("vot"));
-				Mark mark = Mark.getMark(vot >= 0 ? 1 : -1);
-//				if (vot == 0) continue;
+				Mark mark = Mark.getMark(vot >= 0 ? 1 : -1); // neutralne cvorove posmatramo kao pozitivne
 				
-//				Mark mark = Mark.getMark(vot);
+//				Mark mark = Mark.getMark(vot > 0 ? 1 : -1); // neutralne cvorove posmatramo kao negativne
+				
+//				if (vot == 0) continue;
+//				Mark mark = Mark.getMark(vot); // neutralne cvorove ne gledamo, preskacemo ih
 				
 				
 				MarkedEdge checkPotentialEdge = graph.findEdge(node1, node2);
@@ -114,7 +116,7 @@ public class NetworkReader {
 //				
 //				linesCounter++;
 //			}
-			System.out.println(graph.getVertexCount());
+			System.out.println(linesCounter);
 			return graph;
 		}
 	}
