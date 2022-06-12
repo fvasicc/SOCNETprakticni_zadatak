@@ -178,4 +178,19 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, M
 		
 		return this.negativeEdges;
 	}
+
+	@Override
+	public int getPositiveLinksCount() {
+		return (int) this.graph.getEdges().stream().filter(e -> markTransformer.transform(e) == Mark.POSITIVE).count();
+	}
+
+	@Override
+	public int getNegativeLinksCount() {
+		return (int) this.graph.getEdges().stream().filter(e -> markTransformer.transform(e) == Mark.NEGATIVE).count();
+	}
+
+	@Override
+	public int getOriginalGraphVertexCount() {
+		return this.graph.getVertexCount();
+	}
 }

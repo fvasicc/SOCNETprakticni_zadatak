@@ -15,5 +15,11 @@ public interface MarkedGraphMetricsU<V, E> {
 	boolean isClusterable();
 	
 	List<EdgeInfo<E, V>> getNegativeLinks() throws GraphIsClusterableException;
+	
+	int getPositiveLinksCount();
+	
+	int getNegativeLinksCount();
+	
+	int getOriginalGraphVertexCount();
 
 }

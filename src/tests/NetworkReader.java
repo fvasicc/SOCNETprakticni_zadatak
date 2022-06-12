@@ -56,7 +56,7 @@ public class NetworkReader {
 	}
 
 	public static UndirectedSparseGraph<String, MarkedEdge> readWiki(String file, int lines) throws FileNotFoundException, IOException {
-		String regex = "(?sm)SRC:(?<src>.*?)TGT:(?<tgt>.*?)VOT:(?<vot>\\d{1}).*";
+		String regex = "(?sm)SRC:(?<src>.*?)TGT:(?<tgt>.*?)VOT:(?<vot>-?\\d{1}).*";
 		Pattern pattern = Pattern.compile(regex);
 		Matcher m = null;
 		try (BufferedReader in = new BufferedReader(new FileReader(file))) {
@@ -74,9 +74,10 @@ public class NetworkReader {
 				String node1 = m.group("src").trim();
 				String node2 = m.group("tgt").trim();
 				Integer vot = Integer.parseInt(m.group("vot"));
-				Mark mark = Mark.getMark(vot >= 0 ? 1 : -1); // neutralne cvorove posmatramo kao pozitivne
 				
-//				Mark mark = Mark.getMark(vot > 0 ? 1 : -1); // neutralne cvorove posmatramo kao negativne
+//				Mark mark = Mark.getMark(vot >= 0 ? 1 : -1); // neutralne cvorove posmatramo kao pozitivne
+				
+				Mark mark = Mark.getMark(vot > 0 ? 1 : -1); // neutralne cvorove posmatramo kao negativne
 				
 //				if (vot == 0) continue;
 //				Mark mark = Mark.getMark(vot); // neutralne cvorove ne gledamo, preskacemo ih

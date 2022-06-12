@@ -16,7 +16,9 @@ public class PrettyPrint<V, E> {
 		System.out.println("5 - Koliko mreza ima klastera koji nisu koalicije?");
 		System.out.println("6 - Koje veze treba izbrisati da bi mreza bila klasterabilna?");
 		System.out.println("7 - Koliko cvorova ima gigantska komponenta?");
-		System.out.println("8 - ");
+		System.out.println("8 - Koliko graf ima cvorova?");
+		System.out.println("9 - Koliko graf ima pozitivnih linkova?");
+		System.out.println("10 - Koliko graf ima negativnih linkova?");
 	}
 
 	public void getResultByChoice(int choice, ComponentClustererBFS<V, E> ccBFS) throws GraphIsClusterableException {
@@ -58,7 +60,15 @@ public class PrettyPrint<V, E> {
 			break;
 		}
 		case 8: {
-
+			System.out.println("Graf ima " + ccBFS.getOriginalGraphVertexCount() + " cvorova");
+			break;
+		}
+		case 9: {
+			System.out.println("Graf ima " + ccBFS.getPositiveLinksCount() + " pozitivnih linkova");
+			break;
+		}
+		case 10: {
+			System.out.println("Graf ima " + ccBFS.getNegativeLinksCount() + " negativnih linkova");
 			break;
 		}
 		default:
