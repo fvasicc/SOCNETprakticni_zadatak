@@ -6,6 +6,7 @@ import java.util.Random;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import model.Mark;
 import model.MarkedEdge;
+import tests.NetworkWriter;
 
 public class WattsStrogatzModel {
 	
@@ -47,10 +48,11 @@ public class WattsStrogatzModel {
 			}
 		}
 		
-		System.out.println(graph);
-		
 		for (int i = 0; i < this.numberOfNodes; i++) { 
 			for (int j : new ArrayList<Integer>(graph.getNeighbors(i))) {
+				// i < j -> da ne bismo potencijalno dva puta istu granu gledali
+				// graph.getNeighborCount(i) < this.numberOfNodes - 1 da izbegnemo beskonacnu petlju ako je cvor povezan sa svima
+				// i u while petlji ne moze da pronadje ok cvor za povezivanje
 				if (i < j && rnd.nextDouble() < this.p && graph.getNeighborCount(i) < this.numberOfNodes - 1) {
 					int dst = 0;
 					boolean dstOk = false;
@@ -68,6 +70,9 @@ public class WattsStrogatzModel {
 	}
 	
 	public static void main(String[] args) {
-		
+		UndirectedSparseGraph<Integer, MarkedEdge> g = new WattsStrogatzModel(20, 10, 0.2).getRandomGraph(0.0);
+		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/WattsStrogatz.gml");
+		System.out.println(g);
+
 	}
 }
