@@ -70,7 +70,7 @@ public class WattsStrogatzModel {
 	}
 	
 	public static void main(String[] args) {
-		UndirectedSparseGraph<Integer, MarkedEdge> g = new WattsStrogatzModel(20, 10, 0.2).getRandomGraph(0.0);
+		UndirectedSparseGraph<Integer, MarkedEdge> g = new WattsStrogatzModel(250, 4, 0.02).getRandomGraph(0.50);
 		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/WattsStrogatz.gml");
 		System.out.println(g);
 

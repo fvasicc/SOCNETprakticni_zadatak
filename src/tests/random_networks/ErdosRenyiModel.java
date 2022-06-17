@@ -6,6 +6,7 @@ import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import model.Mark;
 import model.MarkedEdge;
+import tests.NetworkWriter;
 
 public class ErdosRenyiModel {
 	
@@ -60,10 +61,12 @@ public class ErdosRenyiModel {
 	}
 	
 	public static void main(String[] args) {
-		ErdosRenyiModel erM = new ErdosRenyiModel(60, 25);
-		ComponentClustererBFS<Integer, MarkedEdge> cc = new ComponentClustererBFS<>(erM.generateERModelWithMarkedLinks(0.4), MarkedEdge::getMark);
+		ErdosRenyiModel erM = new ErdosRenyiModel(250, 500);
+		UndirectedSparseGraph<Integer, MarkedEdge> g = erM.generateERModelWithMarkedLinks(0.5);
+		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/ErdosRenyi.gml");
+		ComponentClustererBFS<Integer, MarkedEdge> cc = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
 		System.out.println(cc.getNegativeLinksCount());
-		System.out.println(cc.getAllComponents());
+		System.out.println(cc.getAllComponents().size());
 		System.out.println(cc.isClusterable());
 	}
 }

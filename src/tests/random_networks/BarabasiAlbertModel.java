@@ -3,44 +3,74 @@ package tests.random_networks;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
 import model.Mark;
 import model.MarkedEdge;
+import model.PrettyPrint;
 import tests.NetworkWriter;
 
 public class BarabasiAlbertModel {
 	
 	private int nodesNumber;
 	private int m0;
-	private double nodesConnectionProbability;
 	private int m;
 	
-	public BarabasiAlbertModel(int nodesNumber, int m0, double nodesConnectionProbability, int m) {
+	private UndirectedSparseGraph<Integer, MarkedEdge> graph;
+	
+	public BarabasiAlbertModel(int n, int m0, int e0, int m, double negativeLinkProbability) {
 		
-		if (nodesNumber <= 0) 
+		if (n <= 0) 
 			throw new IllegalArgumentException("");
 		
-		if (nodesConnectionProbability < 0 || nodesConnectionProbability > 1) 
+		if (e0 < 0) 
 			throw new IllegalArgumentException("");
 		
-		if (m0 > nodesNumber) 
+		if (m0 > n) 
 			throw new IllegalArgumentException("");
 		
 		if (m >= m0) 
 			throw new IllegalArgumentException("");
 		
-		this.nodesNumber = nodesNumber;
+		if (negativeLinkProbability < 0 || negativeLinkProbability > 1.0)
+			throw new IllegalArgumentException("");
+		
+		this.nodesNumber = n;
 		this.m0 = m0;
-		this.nodesConnectionProbability = nodesConnectionProbability;
 		this.m = m;
+		
+		this.graph = new ErdosRenyiModel(this.m0, e0).generateERModelWithMarkedLinks(negativeLinkProbability);
+	}
+	
+	public BarabasiAlbertModel(int n,int m0, double p, int m, double negativeLinkProbability) {
+		
+		if (n <= 0) 
+			throw new IllegalArgumentException("");
+		
+		if (m0 > n) 
+			throw new IllegalArgumentException("");
+		
+		if (p < 0 || p > 1.0)
+			throw new IllegalArgumentException("");
+		
+		if (m >= m0) 
+			throw new IllegalArgumentException("");
+		
+		if (negativeLinkProbability < 0 || negativeLinkProbability > 1.0)
+			throw new IllegalArgumentException("");
+		
+		this.nodesNumber = n;
+		this.m0 = m0;
+		this.m = m;
+		
+		this.graph = new GilbertModel(m0, p).getGraph(negativeLinkProbability);
 	}
 	
 	public UndirectedSparseGraph<Integer, MarkedEdge> getBANetwork(double negativeLinkProbability) {
-		
-		UndirectedSparseGraph<Integer, MarkedEdge> graph = new GilbertModel(this.m0, this.nodesConnectionProbability).getGraph(negativeLinkProbability);
+	
 		Random rnd = new Random();
 		
 		List<Integer> degs = new ArrayList<>();
@@ -54,7 +84,7 @@ public class BarabasiAlbertModel {
 			for (int j = 0; j < this.m; j++) {
 				int old;
 				do {
-					old = rnd.nextInt(degs.size());
+					old = degs.get(rnd.nextInt(degs.size()));
 				} while (old == i);
 				if (graph.findEdge(i, old) == null) {
 					graph.addEdge(new MarkedEdge(rnd.nextDouble() < negativeLinkProbability ? Mark.NEGATIVE : Mark.POSITIVE), i, old);
@@ -70,11 +100,26 @@ public class BarabasiAlbertModel {
 	}
 	
 	public static void main(String[] args) throws GraphIsClusterableException {
-		UndirectedSparseGraph<Integer, MarkedEdge> g = new BarabasiAlbertModel(30, 10, 0.4, 8).getBANetwork(0.05);
-		System.out.println(g);
-		System.out.println(new ComponentClustererBFS<>(g, MarkedEdge::getMark).getNegativeLinks());
-
+		UndirectedSparseGraph<Integer, MarkedEdge> g = new BarabasiAlbertModel(250, 20, 50, 4, 0.15).getBANetwork(0.20);
 		System.out.println(new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/BarabasiAlbert.gml"));
+		ComponentClustererBFS<Integer, MarkedEdge >ccBFS = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
+		PrettyPrint<Integer, MarkedEdge> pp = new PrettyPrint<>();
+		pp.printMenu();
+		System.out.println("Za kraj unesi 0");
+		Scanner sc = new Scanner(System.in);
+		System.out.print("Unesi izbor >> ");
+		int in = sc.nextInt();
+		while (in != 0) {
+			try {
+				pp.getResultByChoice(in, ccBFS);
+			} catch (GraphIsClusterableException e) {
+				// TODO Auto-generated catch block
+				System.out.println(e.getMessage());
+			}
+			System.out.print("Unesi izbor >> ");
+			in = sc.nextInt();
+		} ;
+		sc.close();
 	}
 
 }

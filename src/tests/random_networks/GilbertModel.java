@@ -5,6 +5,7 @@ import java.util.Random;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import model.Mark;
 import model.MarkedEdge;
+import tests.NetworkWriter;
 
 public class GilbertModel {
 	
@@ -56,5 +57,11 @@ public class GilbertModel {
 	
 	public UndirectedSparseGraph<Integer, MarkedEdge> getGraph() {
 		return getGraph(NEGATIVE_LINK_PROBABILITY);
+	}
+	public static void main(String[] args) {
+		GilbertModel gm = new GilbertModel(250, 0.05);
+		UndirectedSparseGraph<Integer, MarkedEdge> g = gm.getGraph(0.50);
+		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/Gilbert.gml");
+//		ComponentClustererBFS<Integer, MarkedEdge> cc = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
 	}
 }
