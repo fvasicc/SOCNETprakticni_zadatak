@@ -6,8 +6,9 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
+import interfaces.RandomGraph;
 
-public class BarabsiAlbertRandomModel<V, E> {
+public class BarabsiAlbertRandomModel<V, E> implements RandomGraph<V, E>{
 	
 	private int n;
 	private int m0;
@@ -22,25 +23,25 @@ public class BarabsiAlbertRandomModel<V, E> {
 	public BarabsiAlbertRandomModel(int n, int m0, int e0, int m, Supplier<V> nodeFactory, Supplier<E> edgeFactory, Supplier<E> baseGraphEdgeFactory) {
 		
 		if (n <= 0) 
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter n -> Number of nodes must be positive!");
 		
 		if (e0 < 0) 
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter e0 -> Number of edges in Erdos Renyi network must be positive!");
 		
-		if (m0 > n) 
-			throw new IllegalArgumentException("");
+		if (m0 > n || m0 <= 0) 
+			throw new IllegalArgumentException("Parameter m0 -> Number of nodes in Erdos Renyi network must be positive and less than n!");
 		
 		if (m >= m0) 
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter m -> Number of new connections must be less than number of nodes in initial graph!");
 		
 		if (nodeFactory == null)
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter nodeFactory -> Can't be null!");
 		
 		if (edgeFactory == null)
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter edgeFactory -> Can't be null!");
 		
 		if (baseGraphEdgeFactory == null)
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter baseGraphEdgeFactory -> Can't be null!");
 		
 		this.n = n;
 		this.m0 = m0;
@@ -51,6 +52,7 @@ public class BarabsiAlbertRandomModel<V, E> {
 		this.baseGraphEdgeFactory = baseGraphEdgeFactory;
 	}
 
+	@Override
 	public void getGraph(UndirectedSparseGraph<V, E> targetGraph) {
 		ErdosRenyiRandomModel<V, E> er = new ErdosRenyiRandomModel<>(m0, e0, nodeFactory, baseGraphEdgeFactory);
 		er.getGraph(targetGraph);

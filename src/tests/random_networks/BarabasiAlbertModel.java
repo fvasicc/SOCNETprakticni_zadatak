@@ -44,7 +44,7 @@ public class BarabasiAlbertModel {
 		this.m0 = m0;
 		this.m = m;
 		
-		this.graph = new ErdosRenyiModel(this.m0, e0).generateERModelWithMarkedLinks(negativeLinkProbability);
+//		this.graph = new ErdosRenyiModel(this.m0, e0).generateERModelWithMarkedLinks(negativeLinkProbability);
 	}
 	
 	public BarabasiAlbertModel(int n,int m0, double p, int m, double negativeLinkProbability) {

@@ -6,8 +6,9 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
+import interfaces.RandomGraph;
 
-public class GilbertRandomModel<V, E> {
+public class GilbertRandomModel<V, E> implements RandomGraph<V, E>{
 
 	private int n;
 	private double p;
@@ -17,16 +18,16 @@ public class GilbertRandomModel<V, E> {
 	
 	public GilbertRandomModel(int n, double p, Supplier<V> nodeFactory, Supplier<E> edgeFactory) {
 		if (n <= 0) 
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter n -> Number of nodes must be postive!");
 		
 		if (p < 0 || p > 1) 
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter p -> Probability must be in interval [0,1]");
 		
 		if (nodeFactory == null)
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter nodeFactory -> Can't be null!");
 		
 		if (edgeFactory == null)
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter edgeFactory -> Can't be null!");
 		
 		this.n = n;
 		this.p = p;
@@ -34,6 +35,7 @@ public class GilbertRandomModel<V, E> {
 		this.nodeFactory = nodeFactory;
 	}
 	
+	@Override
 	public void getGraph(UndirectedSparseGraph<V, E> targetGraph) {
 		
 		for (int i = 0; i < this.n; i++) {

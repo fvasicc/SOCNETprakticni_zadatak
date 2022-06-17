@@ -6,8 +6,9 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
+import interfaces.RandomGraph;
 
-public class WattsStrogatzRandomModel<V, E> {
+public class WattsStrogatzRandomModel<V, E> implements RandomGraph<V, E>{
 	
 	private int n;
 	private int k;
@@ -19,19 +20,19 @@ public class WattsStrogatzRandomModel<V, E> {
 	public WattsStrogatzRandomModel(int n, int k, double p, Supplier<V> nodeFactory, Supplier<E> edgeFactory) {
 		
 		if (n <= 0) 
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter n -> Number of nodes must be positive!");
 		
 		if (k <= 0 || k > n)
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter k -> Number of neighbors in initial graph must be in interval [1, n)");
 		
 		if (p < 0 || p > 1)
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter p -> Probability must be in interval [0,1] !");
 		
 		if (nodeFactory == null)
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter nodeFactory -> Can't be null!");
 		
 		if (edgeFactory == null)
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter edgeFactory -> Can't be null!");
 		
 		this.n = n;
 		this.k = k;
@@ -41,7 +42,7 @@ public class WattsStrogatzRandomModel<V, E> {
 		this.nodeFactory = nodeFactory;
 	}
 
-	
+	@Override
 	public void getGraph(UndirectedSparseGraph<V, E> targetGraph) {
 		
 		for (int i = 0; i < this.n; i++) {
@@ -59,10 +60,9 @@ public class WattsStrogatzRandomModel<V, E> {
 		for (int i = 0; i < this.n; i++) { 
 			V v1 = nodes.get(i);
 			for (V v2 : new ArrayList<V>(targetGraph.getNeighbors(v1))) {
-				// i < j -> da ne bismo potencijalno dva puta istu granu gledali
 				// graph.getNeighborCount(i) < this.numberOfNodes - 1 da izbegnemo beskonacnu petlju ako je cvor povezan sa svima
 				// i u while petlji ne moze da pronadje ok cvor za povezivanje
-				if (v1 != v2 && rnd.nextDouble() < this.p && targetGraph.getNeighborCount(v1) < this.n - 1) {
+				if (rnd.nextDouble() < this.p && targetGraph.getNeighborCount(v1) < this.n - 1) {
 					int dst = 0;
 					boolean dstOk = false;
 					while (!dstOk) {
