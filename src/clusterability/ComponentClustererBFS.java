@@ -27,7 +27,7 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, M
 	
 	private UndirectedSparseGraph<UndirectedSparseGraph<V, E>, E> graphComponents = new UndirectedSparseGraph<>();
 	
-	private HashSet<V> visited;
+	private HashSet<V> visited = null;
 	
 	public ComponentClustererBFS(UndirectedSparseGraph<V, E> graph, Transformer<E, Mark> markTransformer) {
 		this.graph = graph;

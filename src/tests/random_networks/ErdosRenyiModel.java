@@ -1,11 +1,13 @@
 package tests.random_networks;
 
 import java.util.Random;
+import java.util.function.Supplier;
 
 import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import model.Mark;
 import model.MarkedEdge;
+import networks.ErdosRenyiRandomModel;
 import tests.NetworkWriter;
 
 public class ErdosRenyiModel {
@@ -62,8 +64,26 @@ public class ErdosRenyiModel {
 	
 	public static void main(String[] args) {
 		ErdosRenyiModel erM = new ErdosRenyiModel(250, 500);
+		Supplier<Integer> nodeFactory = new Supplier<Integer>() {
+			private int i = 0;
+			@Override
+			public Integer get() {
+				return i++;
+			}
+		};
+		Supplier<MarkedEdge> edgeFactory = new Supplier<MarkedEdge>() {
+			private static double P = 0.5;
+			@Override
+			public MarkedEdge get() {
+				Random rnd = new Random();
+				return new MarkedEdge(rnd.nextDouble() < P ? Mark.NEGATIVE : Mark.POSITIVE);
+			}
+		};
+		ErdosRenyiRandomModel<Integer, MarkedEdge> erMR = new ErdosRenyiRandomModel<>(250, 500, nodeFactory, edgeFactory);
+		UndirectedSparseGraph<Integer, MarkedEdge> g1 = new UndirectedSparseGraph<Integer, MarkedEdge>();
+		erMR.getGraph(g1);
 		UndirectedSparseGraph<Integer, MarkedEdge> g = erM.generateERModelWithMarkedLinks(0.5);
-		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/ErdosRenyi.gml");
+		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g1, "res/ErdosRenyi.gml");
 		ComponentClustererBFS<Integer, MarkedEdge> cc = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
 		System.out.println(cc.getNegativeLinksCount());
 		System.out.println(cc.getAllComponents().size());

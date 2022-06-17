@@ -2,10 +2,12 @@ package tests.random_networks;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.function.Supplier;
 
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import model.Mark;
 import model.MarkedEdge;
+import networks.WattsStrogatzRandomModel;
 import tests.NetworkWriter;
 
 public class WattsStrogatzModel {
@@ -70,8 +72,27 @@ public class WattsStrogatzModel {
 	}
 	
 	public static void main(String[] args) {
-		UndirectedSparseGraph<Integer, MarkedEdge> g = new WattsStrogatzModel(250, 4, 0.02).getRandomGraph(0.50);
-		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/WattsStrogatz.gml");
+		UndirectedSparseGraph<Integer, MarkedEdge> g = new WattsStrogatzModel(250, 4, 0.15).getRandomGraph(0.50);
+		Supplier<Integer> nodeFactory = new Supplier<Integer>() {
+			private int i = 0;
+			@Override
+			public Integer get() {
+				return i++;
+			}
+		};
+		Supplier<MarkedEdge> edgeFactory = new Supplier<MarkedEdge>() {
+			private static double P = 0.5;
+			@Override
+			public MarkedEdge get() {
+				Random rnd = new Random();
+				return new MarkedEdge(rnd.nextDouble() < P ? Mark.NEGATIVE : Mark.POSITIVE);
+			}
+		};
+		WattsStrogatzRandomModel<Integer, MarkedEdge> ws = new WattsStrogatzRandomModel<>(250, 4, 0.15, nodeFactory, edgeFactory);
+		UndirectedSparseGraph<Integer, MarkedEdge> g1 = new UndirectedSparseGraph<Integer, MarkedEdge>();
+		ws.getGraph(g1);
+		
+		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g1, "res/WattsStrogatz.gml");
 		System.out.println(g);
 
 	}

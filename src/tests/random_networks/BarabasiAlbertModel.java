@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.function.Supplier;
 
 import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
@@ -11,6 +12,7 @@ import exceptions.GraphIsClusterableException;
 import model.Mark;
 import model.MarkedEdge;
 import model.PrettyPrint;
+import networks.BarabsiAlbertRandomModel;
 import tests.NetworkWriter;
 
 public class BarabasiAlbertModel {
@@ -100,9 +102,29 @@ public class BarabasiAlbertModel {
 	}
 	
 	public static void main(String[] args) throws GraphIsClusterableException {
-		UndirectedSparseGraph<Integer, MarkedEdge> g = new BarabasiAlbertModel(250, 20, 50, 4, 0.15).getBANetwork(0.20);
-		System.out.println(new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/BarabasiAlbert.gml"));
-		ComponentClustererBFS<Integer, MarkedEdge >ccBFS = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
+		
+		Supplier<Integer> nodeFactory = new Supplier<Integer>() {
+			private int i = 0;
+			@Override
+			public Integer get() {
+				return i++;
+			}
+		};
+		Supplier<MarkedEdge> edgeFactory = new Supplier<MarkedEdge>() {
+			private static double P = 0.15;
+			@Override
+			public MarkedEdge get() {
+				Random rnd = new Random();
+				return new MarkedEdge(rnd.nextDouble() < P ? Mark.NEGATIVE : Mark.POSITIVE);
+			}
+		};
+		BarabsiAlbertRandomModel<Integer, MarkedEdge> erMR = new BarabsiAlbertRandomModel<>(250, 10, 25, 1, nodeFactory, edgeFactory, edgeFactory);
+		UndirectedSparseGraph<Integer, MarkedEdge> g1 = new UndirectedSparseGraph<Integer, MarkedEdge>();
+		erMR.getGraph(g1);
+		
+		UndirectedSparseGraph<Integer, MarkedEdge> g = new BarabasiAlbertModel(250, 10, 25, 1, 0.15).getBANetwork(0.20);
+		System.out.println(new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g1, "res/BarabasiAlbert.gml"));
+		ComponentClustererBFS<Integer, MarkedEdge >ccBFS = new ComponentClustererBFS<>(g1, MarkedEdge::getMark);
 		PrettyPrint<Integer, MarkedEdge> pp = new PrettyPrint<>();
 		pp.printMenu();
 		System.out.println("Za kraj unesi 0");

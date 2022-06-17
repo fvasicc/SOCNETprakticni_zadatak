@@ -1,10 +1,12 @@
 package tests.random_networks;
 
 import java.util.Random;
+import java.util.function.Supplier;
 
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import model.Mark;
 import model.MarkedEdge;
+import networks.GilbertRandomModel;
 import tests.NetworkWriter;
 
 public class GilbertModel {
@@ -63,5 +65,26 @@ public class GilbertModel {
 		UndirectedSparseGraph<Integer, MarkedEdge> g = gm.getGraph(0.50);
 		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/Gilbert.gml");
 //		ComponentClustererBFS<Integer, MarkedEdge> cc = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
+		
+		Supplier<Integer> nodeFactory = new Supplier<Integer>() {
+			private int i = 0;
+			@Override
+			public Integer get() {
+				return i++;
+			}
+		};
+		Supplier<MarkedEdge> edgeFactory = new Supplier<MarkedEdge>() {
+			private static double P = 0.5;
+			@Override
+			public MarkedEdge get() {
+				Random rnd = new Random();
+				return new MarkedEdge(rnd.nextDouble() < P ? Mark.NEGATIVE : Mark.POSITIVE);
+			}
+		};
+		GilbertRandomModel<Integer, MarkedEdge> erMR = new GilbertRandomModel<>(250, 0.05, nodeFactory, edgeFactory);
+		UndirectedSparseGraph<Integer, MarkedEdge> g1 = new UndirectedSparseGraph<Integer, MarkedEdge>();
+		erMR.getGraph(g1);
+		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g1, "res/Gilbert.gml");
+		
 	}
 }
