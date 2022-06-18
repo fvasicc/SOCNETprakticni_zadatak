@@ -1,9 +1,10 @@
-package model;
+package tests;
 
 import java.util.List;
 
 import clusterability.ComponentClustererBFS;
 import exceptions.GraphIsClusterableException;
+import model.EdgeInfo;
 
 public class PrettyPrint<V, E> {
 

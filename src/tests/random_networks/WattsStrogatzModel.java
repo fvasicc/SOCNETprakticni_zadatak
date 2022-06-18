@@ -9,9 +9,9 @@ import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
 import model.Mark;
 import model.MarkedEdge;
-import model.PrettyPrint;
 import networks.WattsStrogatzRandomModel;
 import tests.NetworkWriter;
+import tests.PrettyPrint;
 
 public class WattsStrogatzModel {
 	
@@ -20,7 +20,7 @@ public class WattsStrogatzModel {
 	public WattsStrogatzModel(int n, int k, double p, double negativeLinkProbability) {
 		
 		if (negativeLinkProbability < 0.0 || negativeLinkProbability > 1.0)
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter negativeLinkProbability -> Must be positive!");
 		
 		Supplier<Integer> nodeFactory = new Supplier<Integer>() {
 			private int i = 0;

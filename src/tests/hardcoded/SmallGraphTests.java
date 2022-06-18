@@ -11,7 +11,7 @@ import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
 import model.Mark;
 import model.MarkedEdge;
-import model.PrettyPrint;
+import tests.PrettyPrint;
 
 public class SmallGraphTests {
 	

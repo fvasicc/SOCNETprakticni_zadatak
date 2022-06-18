@@ -7,8 +7,8 @@ import java.util.Scanner;
 import clusterability.ComponentClustererBFS;
 import exceptions.GraphIsClusterableException;
 import model.MarkedEdge;
-import model.PrettyPrint;
 import tests.NetworkReader;
+import tests.PrettyPrint;
 
 public class WikiTest {
 	

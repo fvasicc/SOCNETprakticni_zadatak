@@ -9,9 +9,9 @@ import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
 import model.Mark;
 import model.MarkedEdge;
-import model.PrettyPrint;
 import networks.BarabsiAlbertRandomModel;
 import tests.NetworkWriter;
+import tests.PrettyPrint;
 
 public class BarabasiAlbertModel {
 
@@ -20,10 +20,10 @@ public class BarabasiAlbertModel {
 	public BarabasiAlbertModel(int n, int m0, int e0, int m, double negativeLinkProbability, double initialGraphNegLinkP) {
 		
 		if (negativeLinkProbability < 0.0 || negativeLinkProbability > 1.0)
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter negativeLinkProbability -> Must be positive!");
 		
 		if (initialGraphNegLinkP < 0.0 || initialGraphNegLinkP > 1.0)
-			throw new IllegalArgumentException("");
+			throw new IllegalArgumentException("Parameter initialGraphNegLinkP -> Must be positive!");
 		
 		Supplier<Integer> nodeFactory = new Supplier<Integer>() {
 			private int i = 0;
