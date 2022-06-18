@@ -92,32 +92,7 @@ public class NetworkReader {
 					graph.addEdge(new MarkedEdge(mark), node1, node2);
 				}
 			} while (linesCounter++ < lines && (line = in.readLine()) != null);
-//			while (linesCounter < lines && (line = in.readLine()) != null) {
-//				StringBuilder sb = new StringBuilder();
-//				for (int i = 0; i < 7; i++) {
-//					line = in.readLine();
-//					System.out.println(line);
-//					sb.append(line +"\n");
-//				}
-//				m = pattern.matcher(sb.toString());
-//				
-//				String node1 = m.group("src").trim();
-//				String node2 = m.group("tgt").trim();
-//				Integer vot = Integer.parseInt(m.group("vot"));
-//				Mark mark = Mark.getMark(vot >= 0 ? 1 : -1);
-//				
-//				MarkedEdge checkPotentialEdge = graph.findEdge(node1, node2);
-//				
-//				if (checkPotentialEdge != null) {
-//					if (checkPotentialEdge.getMark() == Mark.POSITIVE && mark == Mark.NEGATIVE)
-//						checkPotentialEdge.setNewMark(Mark.NEGATIVE);
-//				} else {
-//					graph.addEdge(new MarkedEdge(mark), node1, node2);
-//				}
-//				
-//				linesCounter++;
-//			}
-			System.out.println(linesCounter);
+
 			return graph;
 		}
 	}

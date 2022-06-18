@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import clusterability.ComponentClustererBFS;
+import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
 import model.MarkedEdge;
 import tests.NetworkReader;
+//import tests.NetworkWriter;
 import tests.PrettyPrint;
 
 public class EpinionsAndSlashdotTest {
@@ -22,7 +24,9 @@ public class EpinionsAndSlashdotTest {
 			System.out.println(file + "\n=================================================");
 			ComponentClustererBFS<Integer, MarkedEdge> ccBFS = null;
 			try { 
-				ccBFS = new ComponentClustererBFS<>(NetworkReader.readEpinionsOrSlashdot(file, LINES_FOR_READING), MarkedEdge::getMark);
+				UndirectedSparseGraph<Integer, MarkedEdge> g = NetworkReader.readEpinionsOrSlashdot(file, LINES_FOR_READING);
+//				new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, file+".gml");
+				ccBFS = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
 				PrettyPrint<Integer, MarkedEdge> pp = new PrettyPrint<>();
 				pp.printMenu();
 				System.out.println("Za kraj unesi 0");

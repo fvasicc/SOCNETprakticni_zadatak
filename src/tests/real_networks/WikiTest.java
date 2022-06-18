@@ -5,22 +5,26 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import clusterability.ComponentClustererBFS;
+import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
 import model.MarkedEdge;
 import tests.NetworkReader;
+//import tests.NetworkWriter;
 import tests.PrettyPrint;
 
 public class WikiTest {
 	
 	public static String FILE = "res/wiki-RfA.txt";
 	
-	private static int LINES_FOR_READING = 2591300;
+	private static int LINES_FOR_READING = 25000;
 	
 	public static void main(String[] args) {
 		System.out.println(FILE + "\n=================================================");
 		ComponentClustererBFS<String, MarkedEdge> ccBFS = null;
 		try { 
-			ccBFS = new ComponentClustererBFS<>(NetworkReader.readWiki(FILE, LINES_FOR_READING), MarkedEdge::getMark);
+			UndirectedSparseGraph<String, MarkedEdge> g = NetworkReader.readWiki(FILE, LINES_FOR_READING);
+//			new NetworkWriter<String, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "wiki-RfA.gml");
+			ccBFS = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
 			PrettyPrint<String, MarkedEdge> pp = new PrettyPrint<>();
 			pp.printMenu();
 			System.out.println("Za kraj unesi 0");

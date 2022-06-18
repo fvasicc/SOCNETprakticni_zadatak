@@ -18,14 +18,15 @@ public class NetworkWriter<V, E> {
 	} 
 	
 	public boolean exportCompGraphGML(UndirectedSparseGraph<UndirectedSparseGraph<V, E>, E> graph, String fileName) {
-		String s = "graph [\n\tmultigraph 1\n";
+		StringBuilder sb = new StringBuilder();
+		sb.append("graph [\n\tmultigraph 1\n");
 		int id = 0;
 		for (UndirectedSparseGraph<V, E> v : graph.getVertices()) {
-			s += "    node [\n"
+			sb.append("    node [\n"
 					+ "    id " + id + "\n"
 					+ "    label \" " + v + "\"\n"
 					+ "    weight \" " + v.getVertexCount() + "\"\n"
-					+ "  ]\n";
+					+ "  ]\n");
 			id++;
 		}
 		
@@ -35,21 +36,21 @@ public class NetworkWriter<V, E> {
 			for (UndirectedSparseGraph<V, E> v2 : graph.getVertices()) {
 				E e = graph.findEdge(v1, v2);
 				if (e != null) {
-					s+= "  edge [\n"
+					sb.append("  edge [\n"
 							+ "    source " + i +"\n"
 							+ "    target " + j +"\n"
 							+ "    sign " + markTransform.transform(e) +"\n"
-							+ "  ]\n";
+							+ "  ]\n");
 				}
 				j++;
 			}
 			i++;
 		}
-		s+= "]";
+		sb.append("]");
 		
 		try {
 			FileWriter fw = new FileWriter(fileName);
-			fw.write(s);
+			fw.write(sb.toString());
 			fw.close();
 			return true;
 		} catch (IOException e) {
@@ -60,13 +61,14 @@ public class NetworkWriter<V, E> {
 	}
 
 	public boolean exportGML(UndirectedSparseGraph<V, E> graph, String fileName) {
-		String s = "graph [\n\tmultigraph 1\n";
+		StringBuilder sb = new StringBuilder();
+		sb.append("graph [\n\tmultigraph 1\n");
 		int id = 0;
 		for (V v : graph.getVertices()) {
-			s += "    node [\n"
+			sb.append("    node [\n"
 					+ "    id " + id + "\n"
 					+ "    label \" " + v + "\"\n"
-					+ "  ]\n";
+					+ "  ]\n");
 			id++;
 		}
 		
@@ -76,21 +78,21 @@ public class NetworkWriter<V, E> {
 			for (V v2 : graph.getVertices()) {
 				E e = graph.findEdge(v1, v2);
 				if (e != null) {
-					s+= "  edge [\n"
+					sb.append("  edge [\n"
 							+ "    source " + i +"\n"
 							+ "    target " + j +"\n"
 							+ "    sign " + markTransform.transform(e) +"\n"
-							+ "  ]\n";
+							+ "  ]\n");
 				}
 				j++;
 			}
 			i++;
 		}
-		s+= "]";
+		sb.append("]");
 		
 		try {
 			FileWriter fw = new FileWriter(fileName);
-			fw.write(s);
+			fw.write(sb.toString());
 			fw.close();
 			return true;
 		} catch (IOException e) {
