@@ -17,6 +17,7 @@ public class EpinionsAndSlashdotTest {
 	private static int LINES_FOR_READING = 25000;
 
 	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
 		for (String file : FILES) {
 			System.out.println(file + "\n=================================================");
 			ComponentClustererBFS<Integer, MarkedEdge> ccBFS = null;
@@ -25,7 +26,6 @@ public class EpinionsAndSlashdotTest {
 				PrettyPrint<Integer, MarkedEdge> pp = new PrettyPrint<>();
 				pp.printMenu();
 				System.out.println("Za kraj unesi 0");
-				Scanner sc = new Scanner(System.in);
 				System.out.print("Unesi izbor >> ");
 				int in = sc.nextInt();
 				while (in != 0) {
@@ -38,9 +38,6 @@ public class EpinionsAndSlashdotTest {
 					System.out.print("Unesi izbor >> ");
 					in = sc.nextInt();
 				} ;
-				
-				
-				sc.close();
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -49,7 +46,8 @@ public class EpinionsAndSlashdotTest {
 				e1.printStackTrace();
 			} catch (IllegalArgumentException e) {
 				System.out.println(e.getMessage());
-			}
+			} 
 		}
+		sc.close();
 	}
 }
