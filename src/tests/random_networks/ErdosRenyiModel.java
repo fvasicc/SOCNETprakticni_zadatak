@@ -1,12 +1,15 @@
 package tests.random_networks;
 
 import java.util.Random;
+import java.util.Scanner;
 import java.util.function.Supplier;
 
 import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
+import exceptions.GraphIsClusterableException;
 import model.Mark;
 import model.MarkedEdge;
+import model.PrettyPrint;
 import networks.ErdosRenyiRandomModel;
 import tests.NetworkWriter;
 
@@ -45,11 +48,25 @@ public class ErdosRenyiModel {
 	
 	public static void main(String[] args) {
 		ErdosRenyiModel er = new ErdosRenyiModel(250, 500, 0.5);
-		UndirectedSparseGraph<Integer, MarkedEdge> g1 = er.getGraph();
-		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g1, "res/ErdosRenyi.gml");
-		ComponentClustererBFS<Integer, MarkedEdge> cc = new ComponentClustererBFS<>(g1, MarkedEdge::getMark);
-		System.out.println(cc.getNegativeLinksCount());
-		System.out.println(cc.getAllComponents().size());
-		System.out.println(cc.isClusterable());
+		UndirectedSparseGraph<Integer, MarkedEdge> g = er.getGraph();
+		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/ErdosRenyi.gml");
+		ComponentClustererBFS<Integer, MarkedEdge >ccBFS = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
+		PrettyPrint<Integer, MarkedEdge> pp = new PrettyPrint<>();
+		pp.printMenu();
+		System.out.println("Za kraj unesi 0");
+		Scanner sc = new Scanner(System.in);
+		System.out.print("Unesi izbor >> ");
+		int in = sc.nextInt();
+		while (in != 0) {
+			try {
+				pp.getResultByChoice(in, ccBFS);
+			} catch (GraphIsClusterableException e) {
+				// TODO Auto-generated catch block
+				System.out.println(e.getMessage());
+			}
+			System.out.print("Unesi izbor >> ");
+			in = sc.nextInt();
+		} ;
+		sc.close();
 	}
 }
