@@ -19,6 +19,7 @@ public class PrettyPrint<V, E> {
 		System.out.println("8 - Koliko graf ima cvorova?");
 		System.out.println("9 - Koliko graf ima pozitivnih linkova?");
 		System.out.println("10 - Koliko graf ima negativnih linkova?");
+		System.out.println("11 - Izvoz mreze komponenti kao grafa u gml fajl?");
 	}
 
 	public void getResultByChoice(int choice, ComponentClustererBFS<V, E> ccBFS) throws GraphIsClusterableException {
@@ -69,6 +70,10 @@ public class PrettyPrint<V, E> {
 		}
 		case 10: {
 			System.out.println("Graf ima " + ccBFS.getNegativeLinksCount() + " negativnih linkova");
+			break;
+		}
+		case 11: {
+			ccBFS.exportCompGraph("res/graphComp.gml");
 			break;
 		}
 		default:

@@ -14,6 +14,7 @@ import interfaces.ComponentClustererU;
 import interfaces.MarkedGraphMetricsU;
 import model.EdgeInfo;
 import model.Mark;
+import tests.NetworkWriter;
 
 public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, MarkedGraphMetricsU<V, E> {
 	
@@ -139,6 +140,10 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, M
 			}
 		}
 		return null;
+	}
+	
+	public void exportCompGraph(String fileName) {
+		new NetworkWriter<V, E>(markTransformer).exportCompGraphGML(this.graphComponents, fileName);
 	}
 
 	@Override
