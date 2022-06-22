@@ -1,4 +1,4 @@
-package model;
+package model.edge;
 
 public class EdgeInfo<E, V>{
 	

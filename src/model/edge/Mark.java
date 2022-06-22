@@ -1,4 +1,4 @@
-package model;
+package model.edge;
 
 public enum Mark {
 	POSITIVE(1), NEGATIVE(-1);

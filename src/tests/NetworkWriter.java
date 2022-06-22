@@ -6,7 +6,8 @@ import java.io.IOException;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
-import model.Mark;
+import model.edge.Mark;
+import model.node.GCNode;
 
 
 public class NetworkWriter<V, E> {
@@ -17,34 +18,28 @@ public class NetworkWriter<V, E> {
 		this.markTransform = transformer;
 	} 
 	
-	public boolean exportCompGraphGML(UndirectedSparseGraph<UndirectedSparseGraph<V, E>, E> graph, String fileName) {
+	public boolean exportCompGraphGML(UndirectedSparseGraph<GCNode, E> graph, String fileName) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("graph [\n\tmultigraph 1\n");
-		int id = 0;
-		for (UndirectedSparseGraph<V, E> v : graph.getVertices()) {
+		for (GCNode v : graph.getVertices()) {
 			sb.append("    node [\n"
-					+ "    id " + id + "\n"
-					+ "    label \" " + v + "\"\n"
-					+ "    weight \" " + v.getVertexCount() + "\"\n"
+					+ "    id " + v.getId() + "\n"
+					+ "    label \" " + v.getLabel() + "\"\n"
+					+ "    weight \" " + v.getNodes() + "\"\n"
 					+ "  ]\n");
-			id++;
 		}
 		
-		int i = 0;
-		for(UndirectedSparseGraph<V, E> v1 : graph.getVertices()) {
-			int j = 0;
-			for (UndirectedSparseGraph<V, E> v2 : graph.getVertices()) {
+		for(GCNode v1 : graph.getVertices()) {
+			for (GCNode v2 : graph.getVertices()) {
 				E e = graph.findEdge(v1, v2);
 				if (e != null) {
 					sb.append("  edge [\n"
-							+ "    source " + i +"\n"
-							+ "    target " + j +"\n"
+							+ "    source " + v1.getId() +"\n"
+							+ "    target " + v2.getId() +"\n"
 							+ "    sign " + markTransform.transform(e) +"\n"
 							+ "  ]\n");
 				}
-				j++;
 			}
-			i++;
 		}
 		sb.append("]");
 		

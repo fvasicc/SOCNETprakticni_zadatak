@@ -8,8 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
-import model.Mark;
-import model.MarkedEdge;
+import model.edge.Mark;
+import model.edge.MarkedEdge;
 
 public class NetworkReader {
 	

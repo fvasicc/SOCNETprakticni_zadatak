@@ -7,7 +7,7 @@ import java.util.Scanner;
 import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
-import model.MarkedEdge;
+import model.edge.MarkedEdge;
 import tests.NetworkReader;
 //import tests.NetworkWriter;
 import tests.PrettyPrint;

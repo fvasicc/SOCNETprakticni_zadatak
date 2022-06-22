@@ -9,8 +9,8 @@ import java.util.Scanner;
 import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
-import model.Mark;
-import model.MarkedEdge;
+import model.edge.Mark;
+import model.edge.MarkedEdge;
 import tests.PrettyPrint;
 
 public class SmallGraphTests {

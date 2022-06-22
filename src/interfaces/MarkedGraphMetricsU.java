@@ -4,7 +4,7 @@ import java.util.List;
 
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
-import model.EdgeInfo;
+import model.edge.EdgeInfo;
 
 public interface MarkedGraphMetricsU<V, E> {
 	

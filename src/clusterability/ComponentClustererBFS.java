@@ -12,8 +12,9 @@ import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
 import interfaces.ComponentClustererU;
 import interfaces.MarkedGraphMetricsU;
-import model.EdgeInfo;
-import model.Mark;
+import model.edge.EdgeInfo;
+import model.edge.Mark;
+import model.node.GCNode;
 import tests.NetworkWriter;
 
 public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, MarkedGraphMetricsU<V, E> {
@@ -27,6 +28,8 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, M
 	List<EdgeInfo<E, V>> negativeEdges = new ArrayList<>();
 	
 	private UndirectedSparseGraph<UndirectedSparseGraph<V, E>, E> graphComponents = new UndirectedSparseGraph<>();
+	
+	private UndirectedSparseGraph<GCNode, E> clusterNetwork = new UndirectedSparseGraph<>();
 	
 	private HashSet<V> visited = null;
 	
@@ -121,11 +124,15 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, M
 		for (int i = 0; i < this.components.size() - 1; i++) {
 			UndirectedSparseGraph<V, E> comp1 = this.components.get(i);
 			this.graphComponents.addVertex(comp1);
+			
+			GCNode gcn1 = new GCNode(i, "CL_" + i, comp1.getVertexCount());
+			this.clusterNetwork.addVertex(gcn1);
 			for (int j = i + 1; j < this.components.size(); j++) {
 				UndirectedSparseGraph<V, E> comp2 = this.components.get(j);
 				E link = conectedComponents(comp1, comp2);
 				if (link != null) {
 					this.graphComponents.addEdge(link, comp1, comp2);
+					this.clusterNetwork.addEdge(link, gcn1, new GCNode(j, "CL_" + j, comp2.getVertexCount()));
 				}
 			}
 		}
@@ -143,7 +150,11 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, M
 	}
 	
 	public void exportCompGraph(String fileName) {
-		new NetworkWriter<V, E>(markTransformer).exportCompGraphGML(this.graphComponents, fileName);
+		new NetworkWriter<V, E>(markTransformer).exportCompGraphGML(this.clusterNetwork, fileName);
+	}
+	
+	public UndirectedSparseGraph<GCNode, E> getClusterNetwork() {		
+		return this.clusterNetwork;
 	}
 
 	@Override
