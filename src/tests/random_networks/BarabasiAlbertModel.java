@@ -4,15 +4,15 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.function.Supplier;
 
-import clusterability.ClusteringCoefficient;
 import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
+import metrics.clustering.ClusteringCoefficient;
+import metrics.smallworld.SmallWorldCoefficent;
 import model.edge.Mark;
 import model.edge.MarkedEdge;
 import networks.BarabsiAlbertRandomModel;
-import smallworld.SmallWorldCoefficent;
 import tests.NetworkWriter;
 import tests.PrettyPrint;
 

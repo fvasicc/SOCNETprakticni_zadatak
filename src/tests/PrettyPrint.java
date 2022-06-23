@@ -3,11 +3,13 @@ package tests;
 import java.util.List;
 import java.util.Scanner;
 
-import clusterability.ClusteringCoefficient;
 import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
+import metrics.centrality.CentralityMetrics;
+import metrics.clustering.ClusteringCoefficient;
+import metrics.smallworld.SmallWorldCoefficent;
 import model.edge.EdgeInfo;
 import model.edge.MarkedEdge;
 
@@ -56,10 +58,12 @@ public class PrettyPrint<V, E> {
 		case 6: {
 			List<EdgeInfo<E, V>> eil = ccBFS.getNegativeLinks();
 			System.out.println("Ukupno treba izbrisati " + eil.size() + " linkova da mreza postane klasterabilna");
+			
 			System.out.println("Linkovi koje treba izbrisati da bi mreza bila klasterabilna:");
 			for (EdgeInfo<E, V> ei : eil) {
 				System.out.println(ei);
 			}
+			
 			break;
 		}
 		case 7: {
@@ -70,6 +74,13 @@ public class PrettyPrint<V, E> {
 			V node = cc.getNodeWithMaxClusteringCoefficient();
 			System.out.println("Cvor sa najvecim koeficijentom klasterisanja u gigantskoj komponenti >> " + node + " --> " + cc.getClusteringCoefficientForNode(node));
 			System.out.println("Diameter >> " + DistanceStatistics.diameter(g));
+			SmallWorldCoefficent<V, E> swc = new SmallWorldCoefficent<>(g);
+			System.out.println("Small-world coefficient >> " + swc.getSmallWorldCoeff());
+			System.out.println("Network efficient >> " + swc.getNetworkEfficent());
+			CentralityMetrics<V, E> cm = new CentralityMetrics<>(g);
+			System.out.println("BC max >> " + cm.getNodeWithMaxBC() + " --> " + cm.getBCfor(cm.getNodeWithMaxBC()));
+			System.out.println("CC max >> " + cm.getNodeWithMaxCC() + " --> " + cm.getCCfor(cm.getNodeWithMaxCC()));
+			System.out.println("EC max >> " + cm.getNodeWithMaxEC() + " --> " + cm.getECfor(cm.getNodeWithMaxEC()));
 			break;
 		}
 		case 8: {

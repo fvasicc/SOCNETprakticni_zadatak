@@ -1,4 +1,4 @@
-package clusterability;
+package metrics.clustering;
 
 import java.util.Map;
 

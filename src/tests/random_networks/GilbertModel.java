@@ -2,17 +2,18 @@ package tests.random_networks;
 
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Map.Entry;
 import java.util.function.Supplier;
 
-import clusterability.ClusteringCoefficient;
 import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
+import metrics.centrality.CentralityMetrics;
+import metrics.clustering.ClusteringCoefficient;
 import model.edge.Mark;
 import model.edge.MarkedEdge;
 import networks.GilbertRandomModel;
-import smallworld.SmallWorldCoefficent;
 import tests.NetworkWriter;
 import tests.PrettyPrint;
 
@@ -51,17 +52,32 @@ public class GilbertModel {
 	
 	public static void main(String[] args) {
 		
-		GilbertModel gm = new GilbertModel(250, 0.15, 0.5);
+		GilbertModel gm = new GilbertModel(300, 0.05, 0.30);
 		UndirectedSparseGraph<Integer, MarkedEdge> g = gm.getGraph();
 		
 		ClusteringCoefficient<Integer, MarkedEdge> cc = new ClusteringCoefficient<>(g);
 		System.out.println("Average clustering coefficient >> " + cc.averageClusteringCoeficient());
 		Integer node = cc.getNodeWithMaxClusteringCoefficient();
-		System.out.println("Cvor sa najvecim cc >> " + node + " --> " + cc.getClusteringCoefficientForNode(node));
+		System.out.println("Cvor sa najvecim koeficijentom klasterisanja >> " + node + " --> " + cc.getClusteringCoefficientForNode(node));
 		System.out.println("Diameter >> " + DistanceStatistics.diameter(g));
-		SmallWorldCoefficent<Integer, MarkedEdge> swc = new SmallWorldCoefficent<>(g);
-		System.out.println("Small-world coefficient >> " + swc.getSmallWorldCoeff());
-		System.out.println("Network efficient" + swc.getNetworkEfficent());
+		
+		CentralityMetrics<Integer, MarkedEdge> cm = new CentralityMetrics<>(g);
+		System.out.println("Betweenness max >> " + cm.getNodeWithMaxBC() + " --> " + cm.getBCfor(cm.getNodeWithMaxBC()));
+		System.out.println("Closeness max >> " + cm.getNodeWithMaxCC() + " --> " + cm.getCCfor(cm.getNodeWithMaxCC()));
+		System.out.println("Eigenvector max >> " + cm.getNodeWithMaxEC() + " --> " + cm.getECfor(cm.getNodeWithMaxEC()));
+		
+		System.out.println("Pet cvorova sa najvecom betweenness >> ");
+		for (Entry<Integer, Double> e : cm.getMaxNBC(5).entrySet()) {
+			System.out.println(e.getKey() + " -> " + e.getValue());
+		}
+		System.out.println("Pet cvorova sa najvecom closeness >> ");
+		for (Entry<Integer, Double> e : cm.getMaxNCC(5).entrySet()) {
+			System.out.println(e.getKey() + " -> " + e.getValue());
+		}
+		System.out.println("Pet cvorova sa najvecom eigenvector >> ");
+		for (Entry<Integer, Double> e : cm.getMaxNEC(5).entrySet()) {
+			System.out.println(e.getKey() + " -> " + e.getValue());
+		}
 		
 		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/Gilbert.gml");
 		ComponentClustererBFS<Integer, MarkedEdge >ccBFS = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
