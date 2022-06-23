@@ -4,12 +4,15 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.function.Supplier;
 
+import clusterability.ClusteringCoefficient;
 import clusterability.ComponentClustererBFS;
+import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
 import model.edge.Mark;
 import model.edge.MarkedEdge;
 import networks.BarabsiAlbertRandomModel;
+import smallworld.SmallWorldCoefficent;
 import tests.NetworkWriter;
 import tests.PrettyPrint;
 
@@ -60,6 +63,16 @@ public class BarabasiAlbertModel {
 	public static void main(String[] args) throws GraphIsClusterableException {
 
 		UndirectedSparseGraph<Integer, MarkedEdge> g = new BarabasiAlbertModel(250, 10, 25, 1, 0.15, 0.05).getGraph();
+		
+		ClusteringCoefficient<Integer, MarkedEdge> cc = new ClusteringCoefficient<>(g);
+		System.out.println("Average clustering coefficient >> " + cc.averageClusteringCoeficient());
+		Integer node = cc.getNodeWithMaxClusteringCoefficient();
+		System.out.println("Cvor sa najvecim cc >> " + node + " --> " + cc.getClusteringCoefficientForNode(node));
+		System.out.println("Diameter >> " + DistanceStatistics.diameter(g));
+		SmallWorldCoefficent<Integer, MarkedEdge> swc = new SmallWorldCoefficent<>(g);
+		System.out.println("Small-world coefficient >> " + swc.getSmallWorldCoeff());
+		System.out.println("Network efficient" + swc.getNetworkEfficent());
+		
 		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/BarabasiAlbert.gml");
 		ComponentClustererBFS<Integer, MarkedEdge >ccBFS = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
 		PrettyPrint<Integer, MarkedEdge> pp = new PrettyPrint<>();

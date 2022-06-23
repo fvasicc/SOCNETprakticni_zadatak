@@ -3,9 +3,13 @@ package tests;
 import java.util.List;
 import java.util.Scanner;
 
+import clusterability.ClusteringCoefficient;
 import clusterability.ComponentClustererBFS;
+import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
+import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
 import model.edge.EdgeInfo;
+import model.edge.MarkedEdge;
 
 public class PrettyPrint<V, E> {
 
@@ -16,11 +20,11 @@ public class PrettyPrint<V, E> {
 		System.out.println("4 - Koliko mreza komponenti ima cvorova?");
 		System.out.println("5 - Koliko mreza ima klastera koji nisu koalicije?");
 		System.out.println("6 - Koje veze treba izbrisati da bi mreza bila klasterabilna?");
-		System.out.println("7 - Koliko cvorova ima gigantska komponenta?");
+		System.out.println("7 - Informacije o gigantskoj komponenti?");
 		System.out.println("8 - Koliko graf ima cvorova?");
 		System.out.println("9 - Koliko graf ima pozitivnih linkova?");
 		System.out.println("10 - Koliko graf ima negativnih linkova?");
-		System.out.println("11 - Koliko graf ima negativnih linkova?");
+		System.out.println("11 - Koliko graf ima koalicija sa jednim cvorom?");
 		System.out.println("12 - Izvoz mreze komponenti kao grafa u gml fajl?");
 	}
 
@@ -59,7 +63,13 @@ public class PrettyPrint<V, E> {
 			break;
 		}
 		case 7: {
-			System.out.println("Gigantska komponenta ima " + ccBFS.getGiantComponent().getVertexCount() + " cvorova");
+			UndirectedSparseGraph<V, E> g = ccBFS.getGiantComponent();
+			ClusteringCoefficient<V, E> cc = new ClusteringCoefficient<>(g);
+			System.out.println("Gigantska komponenta ima " + g.getVertexCount() + " cvorova");
+			System.out.println("Prosecan koeficijent klasterisanja u gigantskoj komponenti >> " + cc.averageClusteringCoeficient());
+			V node = cc.getNodeWithMaxClusteringCoefficient();
+			System.out.println("Cvor sa najvecim koeficijentom klasterisanja u gigantskoj komponenti >> " + node + " --> " + cc.getClusteringCoefficientForNode(node));
+			System.out.println("Diameter >> " + DistanceStatistics.diameter(g));
 			break;
 		}
 		case 8: {
