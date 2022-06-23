@@ -11,6 +11,7 @@ import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
 import model.edge.Mark;
 import model.edge.MarkedEdge;
+import tests.NetworkWriter;
 import tests.PrettyPrint;
 
 public class SmallGraphTests {
@@ -46,16 +47,18 @@ public class SmallGraphTests {
 	public static void main(String[] args) {
 		
 		System.out.println("KLASTERABILNI GRAFOVI\n=================================================");
-		
+		Scanner sc = new Scanner(System.in);
 		for (String file : FILES_TRUE) {
 			System.out.println(file + "\n=================================================");
 			ComponentClustererBFS<Integer, MarkedEdge> ccBFS = null;
+			UndirectedSparseGraph<Integer, MarkedEdge> graph = null;
 			try {
-				ccBFS = new ComponentClustererBFS<>(readFromF(file), MarkedEdge::getMark);
+				graph = readFromF(file);
+				new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(graph, file.split("\\.")[0] + ".gml");
+				ccBFS = new ComponentClustererBFS<>(graph, MarkedEdge::getMark);
 				PrettyPrint<Integer, MarkedEdge> pp = new PrettyPrint<>();
 				pp.printMenu();
 				System.out.println("Za kraj unesi 0");
-				Scanner sc = new Scanner(System.in);
 				System.out.print("Unesi izbor >> ");
 				int in = sc.nextInt();
 				while (in != 0) {
@@ -67,8 +70,7 @@ public class SmallGraphTests {
 					}
 					System.out.print("Unesi izbor >> ");
 					in = sc.nextInt();
-				} ;
-				sc.close();
+				}
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -85,12 +87,14 @@ public class SmallGraphTests {
 		for (String file : FILES_FALSE) {
 			System.out.println(file + "\n=================================================");
 			ComponentClustererBFS<Integer, MarkedEdge> ccBFS = null;
+			UndirectedSparseGraph<Integer, MarkedEdge> graph = null;
 			try {
+				graph = readFromF(file);
+				new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(graph, file.split("\\.")[0] + ".gml");
 				ccBFS = new ComponentClustererBFS<>(readFromF(file), MarkedEdge::getMark);
 				PrettyPrint<Integer, MarkedEdge> pp = new PrettyPrint<>();
 				pp.printMenu();
 				System.out.println("Za kraj unesi 0");
-				Scanner sc = new Scanner(System.in);
 				System.out.print("Unesi izbor >> ");
 				int in = sc.nextInt();
 				while (in != 0) {
@@ -102,9 +106,7 @@ public class SmallGraphTests {
 					}
 					System.out.print("Unesi izbor >> ");
 					in = sc.nextInt();
-				} ;
-				sc.close();
-				
+				}				
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -115,6 +117,7 @@ public class SmallGraphTests {
 				System.out.println(e.getMessage());
 			}			
 		}		
+		sc.close();
 	}
 }
 

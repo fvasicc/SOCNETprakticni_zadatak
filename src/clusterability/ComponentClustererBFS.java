@@ -17,13 +17,14 @@ import model.edge.Mark;
 import model.node.GCNode;
 import tests.NetworkWriter;
 
+
 public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, MarkedGraphMetricsU<V, E> {
 	
 	private UndirectedSparseGraph<V, E> graph;
 	private Transformer<E, Mark> markTransformer;
 	
 	private List<UndirectedSparseGraph<V, E>> clustersWithNegativeLink = new ArrayList<>();
-	private List<UndirectedSparseGraph<V, E>> clustersWithoutNegtiveLink = new ArrayList<>();
+	private List<UndirectedSparseGraph<V, E>> clustersWithoutNegativeLink = new ArrayList<>();
 	private List<UndirectedSparseGraph<V, E>> components;
 	List<EdgeInfo<E, V>> negativeEdges = new ArrayList<>();
 	
@@ -85,7 +86,6 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, M
 		}
 		
 		identifyNegativeLink(component);
-		
 		components.add(component);
 	}
 	
@@ -117,22 +117,21 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, M
 		}
 		
 		if (!hasNegativeLink) 
-			clustersWithoutNegtiveLink.add(component);
+			clustersWithoutNegativeLink.add(component);
 	}
 	
 	private void generateClusterGraph() {
-		for (int i = 0; i < this.components.size() - 1; i++) {
+		for (int i = 0; i < this.components.size(); i++) {
 			UndirectedSparseGraph<V, E> comp1 = this.components.get(i);
 			this.graphComponents.addVertex(comp1);
-			
-			GCNode gcn1 = new GCNode(i, "CL_" + i, comp1.getVertexCount());
+			GCNode gcn1 = new GCNode(i, "CL_" + i, comp1.getVertexCount(), this.clustersWithoutNegativeLink.contains(comp1));
 			this.clusterNetwork.addVertex(gcn1);
 			for (int j = i + 1; j < this.components.size(); j++) {
 				UndirectedSparseGraph<V, E> comp2 = this.components.get(j);
 				E link = conectedComponents(comp1, comp2);
 				if (link != null) {
 					this.graphComponents.addEdge(link, comp1, comp2);
-					this.clusterNetwork.addEdge(link, gcn1, new GCNode(j, "CL_" + j, comp2.getVertexCount()));
+					this.clusterNetwork.addEdge(link, gcn1, new GCNode(j, "CL_" + j, comp2.getVertexCount(), this.clustersWithoutNegativeLink.contains(comp2)));
 				}
 			}
 		}
@@ -156,6 +155,10 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, M
 	public UndirectedSparseGraph<GCNode, E> getClusterNetwork() {		
 		return this.clusterNetwork;
 	}
+	
+	public int getCoalitionsWithOneVertexCount() {
+		return (int) this.clustersWithoutNegativeLink.stream().filter(c -> c.getVertexCount() == 1).count();
+	}
 
 	@Override
 	public List<UndirectedSparseGraph<V, E>> getAllComponents() {
@@ -174,7 +177,7 @@ public class ComponentClustererBFS<V, E> implements ComponentClustererU<V, E>, M
 	
 	@Override
 	public List<UndirectedSparseGraph<V, E>> getCoalitions() {
-		return clustersWithoutNegtiveLink;
+		return clustersWithoutNegativeLink;
 	}
 	
 	@Override

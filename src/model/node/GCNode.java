@@ -7,12 +7,22 @@ public class GCNode {
 	private int id;
 	private String label;
 	private int nodes;
+	private boolean isCoalition;
 	
-	public GCNode(int id, String label, int nodes) {
+	public GCNode(int id, String label, int nodes, boolean isCoalition) {
 		super();
 		this.id = id;
 		this.label = label;
 		this.nodes = nodes;
+		this.isCoalition = isCoalition;
+	}
+	
+	public boolean isCoalition() {
+		return isCoalition;
+	}
+
+	public void setCoalition(boolean isCoalition) {
+		this.isCoalition = isCoalition;
 	}
 
 	public int getId() {

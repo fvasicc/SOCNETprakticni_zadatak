@@ -25,7 +25,8 @@ public class NetworkWriter<V, E> {
 			sb.append("    node [\n"
 					+ "    id " + v.getId() + "\n"
 					+ "    label \" " + v.getLabel() + "\"\n"
-					+ "    weight \" " + v.getNodes() + "\"\n"
+					+ "    weight " + v.getNodes() + "\n"
+					+ "    coalition \" " + v.isCoalition() + "\"\n"
 					+ "  ]\n");
 		}
 		

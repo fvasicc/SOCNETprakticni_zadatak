@@ -9,14 +9,14 @@ import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
 import model.edge.MarkedEdge;
 import tests.NetworkReader;
-//import tests.NetworkWriter;
+import tests.NetworkWriter;
 import tests.PrettyPrint;
 
 public class EpinionsAndSlashdotTest {
 
 	public static String FILES[] = { "res/soc-sign-Slashdot081106.txt", "res/soc-sign-epinions.txt"};
 	
-	private static int LINES_FOR_READING = 25000;
+	private static int LINES_FOR_READING = 30000;
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -25,7 +25,7 @@ public class EpinionsAndSlashdotTest {
 			ComponentClustererBFS<Integer, MarkedEdge> ccBFS = null;
 			try { 
 				UndirectedSparseGraph<Integer, MarkedEdge> g = NetworkReader.readEpinionsOrSlashdot(file, LINES_FOR_READING);
-//				new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, file+".gml");
+				new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, file.split("\\.")[0] +".gml");
 				ccBFS = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
 				PrettyPrint<Integer, MarkedEdge> pp = new PrettyPrint<>();
 				pp.printMenu();

@@ -1,6 +1,7 @@
 package tests;
 
 import java.util.List;
+import java.util.Scanner;
 
 import clusterability.ComponentClustererBFS;
 import exceptions.GraphIsClusterableException;
@@ -9,7 +10,6 @@ import model.edge.EdgeInfo;
 public class PrettyPrint<V, E> {
 
 	public void printMenu() {
-
 		System.out.println("1 - Da li je mreza klasterabilna?");
 		System.out.println("2 - Koliko mreza ima klastera?");
 		System.out.println("3 - Koliko mreza ima koalicija?");
@@ -20,7 +20,8 @@ public class PrettyPrint<V, E> {
 		System.out.println("8 - Koliko graf ima cvorova?");
 		System.out.println("9 - Koliko graf ima pozitivnih linkova?");
 		System.out.println("10 - Koliko graf ima negativnih linkova?");
-		System.out.println("11 - Izvoz mreze komponenti kao grafa u gml fajl?");
+		System.out.println("11 - Koliko graf ima negativnih linkova?");
+		System.out.println("12 - Izvoz mreze komponenti kao grafa u gml fajl?");
 	}
 
 	public void getResultByChoice(int choice, ComponentClustererBFS<V, E> ccBFS) throws GraphIsClusterableException {
@@ -74,7 +75,16 @@ public class PrettyPrint<V, E> {
 			break;
 		}
 		case 11: {
-			ccBFS.exportCompGraph("res/graphComp.gml");
+			System.out.println("Graf ima " + ccBFS.getCoalitionsWithOneVertexCount() + " koalicija sa samo jednim cvorom");
+			break;
+		}
+		case 12: {
+			Scanner scanner = new Scanner(System.in); 
+			System.out.println("Unesi ime fajla za cuvanje grafa >> ");
+			String file = "res/" + scanner.nextLine() + ".gml";
+			ccBFS.exportCompGraph(file);
+//			scanner.close();
+			System.out.println("Graf je sacuvan na lokaciji: " + file);
 			break;
 		}
 		default:
