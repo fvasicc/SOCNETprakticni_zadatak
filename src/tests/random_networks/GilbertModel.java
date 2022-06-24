@@ -52,7 +52,7 @@ public class GilbertModel {
 	
 	public static void main(String[] args) {
 		
-		GilbertModel gm = new GilbertModel(300, 0.05, 0.30);
+		GilbertModel gm = new GilbertModel(300, 0.05, 0.50);
 		UndirectedSparseGraph<Integer, MarkedEdge> g = gm.getGraph();
 		
 		ClusteringCoefficient<Integer, MarkedEdge> cc = new ClusteringCoefficient<>(g);

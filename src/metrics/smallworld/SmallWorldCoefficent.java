@@ -20,6 +20,9 @@ public class SmallWorldCoefficent<V, E> {
 		List<V> nodes = new ArrayList<>(this.graph.getVertices());
 		for (int i = 0; i < this.graph.getVertexCount() - 1; i++) {
 			for (int j = i + 1; j < this.graph.getVertexCount(); j++) {
+				Number val = usp.getDistance(nodes.get(i), nodes.get(j));
+				if (val == null)
+					throw new IllegalArgumentException("Graph have more then one components!");
 				sum += usp.getDistance(nodes.get(i), nodes.get(j)).doubleValue();
 			} 
 		}
@@ -32,6 +35,9 @@ public class SmallWorldCoefficent<V, E> {
 		List<V> nodes = new ArrayList<>(this.graph.getVertices());
 		for (int i = 0; i < this.graph.getVertexCount() - 1; i++) {
 			for (int j = i + 1; j < this.graph.getVertexCount(); j++) {
+				Number val = usp.getDistance(nodes.get(i), nodes.get(j));
+				if (val == null)
+					throw new IllegalArgumentException("Graph have more then one components!");
 				sum += 1 / usp.getDistance(nodes.get(i), nodes.get(j)).doubleValue();
 			} 
 		}

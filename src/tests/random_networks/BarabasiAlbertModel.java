@@ -2,12 +2,14 @@ package tests.random_networks;
 
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Map.Entry;
 import java.util.function.Supplier;
 
 import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
+import metrics.centrality.CentralityMetrics;
 import metrics.clustering.ClusteringCoefficient;
 import metrics.smallworld.SmallWorldCoefficent;
 import model.edge.Mark;
@@ -62,7 +64,7 @@ public class BarabasiAlbertModel {
 	
 	public static void main(String[] args) throws GraphIsClusterableException {
 
-		UndirectedSparseGraph<Integer, MarkedEdge> g = new BarabasiAlbertModel(250, 10, 25, 1, 0.15, 0.05).getGraph();
+		UndirectedSparseGraph<Integer, MarkedEdge> g = new BarabasiAlbertModel(300, 10, 20, 2, 0.20, 0.25).getGraph();
 		
 		ClusteringCoefficient<Integer, MarkedEdge> cc = new ClusteringCoefficient<>(g);
 		System.out.println("Average clustering coefficient >> " + cc.averageClusteringCoeficient());
@@ -72,6 +74,24 @@ public class BarabasiAlbertModel {
 		SmallWorldCoefficent<Integer, MarkedEdge> swc = new SmallWorldCoefficent<>(g);
 		System.out.println("Small-world coefficient >> " + swc.getSmallWorldCoeff());
 		System.out.println("Network efficient" + swc.getNetworkEfficent());
+		
+		CentralityMetrics<Integer, MarkedEdge> cm = new CentralityMetrics<>(g, true);
+		System.out.println("Betweenness max >> " + cm.getNodeWithMaxBC() + " --> " + cm.getBCfor(cm.getNodeWithMaxBC()));
+		System.out.println("Closeness max >> " + cm.getNodeWithMaxCC() + " --> " + cm.getCCfor(cm.getNodeWithMaxCC()));
+		System.out.println("Eigenvector max >> " + cm.getNodeWithMaxEC() + " --> " + cm.getECfor(cm.getNodeWithMaxEC()));
+		
+		System.out.println("Pet cvorova sa najvecom betweenness >> ");
+		for (Entry<Integer, Double> e : cm.getMaxNBC(5).entrySet()) {
+			System.out.println(e.getKey() + " -> " + e.getValue());
+		}
+		System.out.println("Pet cvorova sa najvecom closeness >> ");
+		for (Entry<Integer, Double> e : cm.getMaxNCC(5).entrySet()) {
+			System.out.println(e.getKey() + " -> " + e.getValue());
+		}
+		System.out.println("Pet cvorova sa najvecom eigenvector >> ");
+		for (Entry<Integer, Double> e : cm.getMaxNEC(5).entrySet()) {
+			System.out.println(e.getKey() + " -> " + e.getValue());
+		}
 		
 		new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "res/BarabasiAlbert.gml");
 		ComponentClustererBFS<Integer, MarkedEdge >ccBFS = new ComponentClustererBFS<>(g, MarkedEdge::getMark);

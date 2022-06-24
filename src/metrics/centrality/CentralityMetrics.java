@@ -29,11 +29,23 @@ public class CentralityMetrics<V, E> {
 		this.bc = new BetweennessCentrality<>(graph);
 		this.cc = new ClosenessCentrality<>(graph);
 		this.ec = new EigenvectorCentrality<>(graph);
+		this.ec.acceptDisconnectedGraph(true);
+		this.ec.evaluate();
 		
 		for (V v : this.graph.getVertices()) {
 			bcMap.put(v, this.bc.getVertexScore(v));
 			ccMap.put(v, this.cc.getVertexScore(v));
 			ecMap.put(v, this.ec.getVertexScore(v));
+		}
+	}
+	
+	public CentralityMetrics(Graph<V, E> graph, boolean centralize) {
+		this(graph);
+		if (centralize) {
+			int val = (graph.getVertexCount() - 1) * (graph.getVertexCount() - 2) / 2;
+			for (Entry<V, Double> entry : bcMap.entrySet()) {
+				entry.setValue(entry.getValue() / val);
+			}
 		}
 	}
 	

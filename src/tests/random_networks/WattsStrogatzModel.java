@@ -52,18 +52,23 @@ public class WattsStrogatzModel {
 	}
 	
 	public static void main(String[] args) {
-		UndirectedSparseGraph<Integer, MarkedEdge> g = new WattsStrogatzModel(250, 4, 0.15, 0.5).getGraph();
+		UndirectedSparseGraph<Integer, MarkedEdge> g = new WattsStrogatzModel(300, 4, 0.20, 0.50).getGraph();
 		
 		ClusteringCoefficient<Integer, MarkedEdge> cc = new ClusteringCoefficient<>(g);
 		System.out.println("Average clustering coefficient >> " + cc.averageClusteringCoeficient());
 		Integer node = cc.getNodeWithMaxClusteringCoefficient();
 		System.out.println("Cvor sa najvecim koeficijentom klasterisanja >> " + node + " --> " + cc.getClusteringCoefficientForNode(node));
 		System.out.println("Diameter >> " + DistanceStatistics.diameter(g));
-		SmallWorldCoefficent<Integer, MarkedEdge> swc = new SmallWorldCoefficent<>(g);
-		System.out.println("Small-world coefficient >> " + swc.getSmallWorldCoeff());
-		System.out.println("Network efficient" + swc.getNetworkEfficent());
 		
-		CentralityMetrics<Integer, MarkedEdge> cm = new CentralityMetrics<>(g);
+		try {
+			SmallWorldCoefficent<Integer, MarkedEdge> swc = new SmallWorldCoefficent<>(g);
+			System.out.println("Small-world coefficient >> " + swc.getSmallWorldCoeff());
+			System.out.println("Network efficient" + swc.getNetworkEfficent());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		CentralityMetrics<Integer, MarkedEdge> cm = new CentralityMetrics<>(g, true);
 		System.out.println("Betweenness max >> " + cm.getNodeWithMaxBC() + " --> " + cm.getBCfor(cm.getNodeWithMaxBC()));
 		System.out.println("Closeness max >> " + cm.getNodeWithMaxCC() + " --> " + cm.getCCfor(cm.getNodeWithMaxCC()));
 		System.out.println("Eigenvector max >> " + cm.getNodeWithMaxEC() + " --> " + cm.getECfor(cm.getNodeWithMaxEC()));
