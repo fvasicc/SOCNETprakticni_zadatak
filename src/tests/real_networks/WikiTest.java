@@ -7,8 +7,10 @@ import java.util.Scanner;
 import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
+import metrics.clustering.ClusteringCoefficient;
 import model.edge.MarkedEdge;
 import tests.NetworkReader;
+import tests.NetworkWriter;
 //import tests.NetworkWriter;
 import tests.PrettyPrint;
 
@@ -16,14 +18,21 @@ public class WikiTest {
 	
 	public static String FILE = "res/wiki-RfA.txt";
 	
-	private static int LINES_FOR_READING = 25000;
+	private static int LINES_FOR_READING = 20000;
 	
 	public static void main(String[] args) {
 		System.out.println(FILE + "\n=================================================");
 		ComponentClustererBFS<String, MarkedEdge> ccBFS = null;
 		try { 
 			UndirectedSparseGraph<String, MarkedEdge> g = NetworkReader.readWiki(FILE, LINES_FOR_READING);
-//			new NetworkWriter<String, MarkedEdge>(MarkedEdge::getMark).exportGML(g, "wiki-RfA.gml");
+			
+			ClusteringCoefficient<String, MarkedEdge> cc = new ClusteringCoefficient<>(g);
+			System.out.println("Average clustering coefficient >> " + cc.averageClusteringCoeficient());
+			String node = cc.getNodeWithMaxClusteringCoefficient();
+			System.out.println("Cvor sa najvecim cc >> " + node + " --> " + cc.getClusteringCoefficientForNode(node));
+
+			new NetworkWriter<String, MarkedEdge>(MarkedEdge::getMark).exportGML(g, FILE.split("\\.")[0] +".gml");
+			
 			ccBFS = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
 			PrettyPrint<String, MarkedEdge> pp = new PrettyPrint<>();
 			pp.printMenu();

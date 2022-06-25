@@ -3,10 +3,10 @@ package tests.real_networks;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
-
 import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
+import metrics.clustering.ClusteringCoefficient;
 import model.edge.MarkedEdge;
 import tests.NetworkReader;
 import tests.NetworkWriter;
@@ -16,7 +16,7 @@ public class EpinionsAndSlashdotTest {
 
 	public static String FILES[] = { "res/soc-sign-Slashdot081106.txt", "res/soc-sign-epinions.txt"};
 	
-	private static int LINES_FOR_READING = 30000;
+	private static int LINES_FOR_READING = 12000;
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -25,6 +25,12 @@ public class EpinionsAndSlashdotTest {
 			ComponentClustererBFS<Integer, MarkedEdge> ccBFS = null;
 			try { 
 				UndirectedSparseGraph<Integer, MarkedEdge> g = NetworkReader.readEpinionsOrSlashdot(file, LINES_FOR_READING);
+				
+				ClusteringCoefficient<Integer, MarkedEdge> cc = new ClusteringCoefficient<>(g);
+				System.out.println("Average clustering coefficient >> " + cc.averageClusteringCoeficient());
+				Integer node = cc.getNodeWithMaxClusteringCoefficient();
+				System.out.println("Cvor sa najvecim cc >> " + node + " --> " + cc.getClusteringCoefficientForNode(node));
+
 				new NetworkWriter<Integer, MarkedEdge>(MarkedEdge::getMark).exportGML(g, file.split("\\.")[0] +".gml");
 				ccBFS = new ComponentClustererBFS<>(g, MarkedEdge::getMark);
 				PrettyPrint<Integer, MarkedEdge> pp = new PrettyPrint<>();
@@ -41,7 +47,7 @@ public class EpinionsAndSlashdotTest {
 					}
 					System.out.print("Unesi izbor >> ");
 					in = sc.nextInt();
-				} ;
+				} ;	
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

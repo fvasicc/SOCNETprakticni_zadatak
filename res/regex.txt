@@ -1,1 +1,0 @@
-(?sm)SRC:(?<src>.*?)TGT:(?<tgt>.*?)VOT:(?<vot>\d{1}).*?
