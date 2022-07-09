@@ -14,6 +14,7 @@ import metrics.clustering.ClusteringCoefficient;
 import model.edge.Mark;
 import model.edge.MarkedEdge;
 import networks.ErdosRenyiRandomModel;
+import networks.clusterable.ErdosRenyModelClusterable;
 import tests.NetworkWriter;
 import tests.PrettyPrint;
 
@@ -41,8 +42,25 @@ public class ErdosRenyiModel {
 			}
 		};
 		
+		Supplier<MarkedEdge> postitiveEdgeFactory = new Supplier<MarkedEdge>() {
+			@Override
+			public MarkedEdge get() {
+				return new MarkedEdge(Mark.POSITIVE);
+			}
+		};
+		Supplier<MarkedEdge> negativeEdgeFactory = new Supplier<MarkedEdge>() {
+			@Override
+			public MarkedEdge get() {
+				return new MarkedEdge(Mark.NEGATIVE);
+			}
+		};
+		
+		ErdosRenyModelClusterable<Integer, MarkedEdge> erc = new ErdosRenyModelClusterable<>(nodes, edges, nodeFactory, 
+				postitiveEdgeFactory, negativeEdgeFactory, MarkedEdge::getMark);
+		
 		ErdosRenyiRandomModel<Integer, MarkedEdge> er = new ErdosRenyiRandomModel<>(nodes, edges, nodeFactory, edgeFactory);
-		er.getGraph(graph);
+//		er.getGraph(graph);
+		erc.getGraph(graph);
 		
 	}
 	

@@ -9,12 +9,14 @@ import clusterability.ComponentClustererBFS;
 import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import exceptions.GraphIsClusterableException;
+import interfaces.Marked;
 import metrics.centrality.CentralityMetrics;
 import metrics.clustering.ClusteringCoefficient;
 import metrics.smallworld.SmallWorldCoefficent;
 import model.edge.Mark;
 import model.edge.MarkedEdge;
 import networks.WattsStrogatzRandomModel;
+import networks.clusterable.WattsStrogatzModelClusterable;
 import tests.NetworkWriter;
 import tests.PrettyPrint;
 
@@ -44,7 +46,12 @@ public class WattsStrogatzModel {
 		};
 		
 		WattsStrogatzRandomModel<Integer, MarkedEdge> ws = new WattsStrogatzRandomModel<>(n, k, p, nodeFactory, edgeFactory);
-		ws.getGraph(graph);
+//		ws.getGraph(graph);
+		
+		WattsStrogatzModelClusterable<Integer, MarkedEdge> wsc = 
+				new WattsStrogatzModelClusterable<>(n, k, p, nodeFactory,() -> {return new MarkedEdge(Mark.POSITIVE);}, 
+						 () -> {return new MarkedEdge(Mark.NEGATIVE);}, MarkedEdge::getMark);
+		wsc.getGraph(graph);
 	}
 
 	public UndirectedSparseGraph<Integer, MarkedEdge> getGraph() {	
@@ -52,7 +59,7 @@ public class WattsStrogatzModel {
 	}
 	
 	public static void main(String[] args) {
-		UndirectedSparseGraph<Integer, MarkedEdge> g = new WattsStrogatzModel(300, 4, 0.20, 0.50).getGraph();
+		UndirectedSparseGraph<Integer, MarkedEdge> g = new WattsStrogatzModel(500, 10, 0.20, 0.50).getGraph();
 		
 		ClusteringCoefficient<Integer, MarkedEdge> cc = new ClusteringCoefficient<>(g);
 		System.out.println("Average clustering coefficient >> " + cc.averageClusteringCoeficient());

@@ -14,6 +14,7 @@ import metrics.clustering.ClusteringCoefficient;
 import model.edge.Mark;
 import model.edge.MarkedEdge;
 import networks.GilbertRandomModel;
+import networks.clusterable.GilbertModelClusterable;
 import tests.NetworkWriter;
 import tests.PrettyPrint;
 
@@ -43,7 +44,12 @@ public class GilbertModel {
 		};
 		
 		GilbertRandomModel<Integer, MarkedEdge> grm = new GilbertRandomModel<>(n, p, nodeFactory, edgeFactory);
-		grm.getGraph(graph);
+//		grm.getGraph(graph);
+		
+		GilbertModelClusterable<Integer, MarkedEdge> grcm = 
+				new GilbertModelClusterable<>(n, p, nodeFactory, () -> {return new MarkedEdge(Mark.POSITIVE);}, 
+																 () -> {return new MarkedEdge(Mark.NEGATIVE);}, MarkedEdge::getMark);
+		grcm.getGraph(graph);
 	}
 	
 	public UndirectedSparseGraph<Integer, MarkedEdge> getGraph() {

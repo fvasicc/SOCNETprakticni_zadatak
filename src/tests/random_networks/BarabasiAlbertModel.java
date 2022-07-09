@@ -15,6 +15,7 @@ import metrics.smallworld.SmallWorldCoefficent;
 import model.edge.Mark;
 import model.edge.MarkedEdge;
 import networks.BarabsiAlbertRandomModel;
+import networks.clusterable.BarabasiAlbertModelClusterable;
 import tests.NetworkWriter;
 import tests.PrettyPrint;
 
@@ -55,7 +56,12 @@ public class BarabasiAlbertModel {
 		};
 		
 		BarabsiAlbertRandomModel<Integer, MarkedEdge> ba = new BarabsiAlbertRandomModel<>(n, m0, e0, m, nodeFactory, edgeFactory, edgeFactoryInitialGraph);
-		ba.getGraph(graph);
+//		ba.getGraph(graph);
+		
+		BarabasiAlbertModelClusterable<Integer, MarkedEdge> bac = 
+				new BarabasiAlbertModelClusterable<>(n, m0, e0, m, nodeFactory, () -> {return new MarkedEdge(Mark.POSITIVE);}, 
+						 () -> {return new MarkedEdge(Mark.NEGATIVE);}, MarkedEdge::getMark);
+		bac.getGraph(graph);
 	}
 	
 	public UndirectedSparseGraph<Integer, MarkedEdge> getGraph() {
